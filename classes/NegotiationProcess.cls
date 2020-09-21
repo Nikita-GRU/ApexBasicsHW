@@ -7,7 +7,7 @@ public class NegotiationProcess {
     public static void newTaskToNewAccount(List<AccountToTask> accounts) {
         for (AccountToTask accountToTask : accounts) {
             if (isTaskCountLessThanThree(accountToTask)) {
-                insert generateNewTask(accountToTask);
+                insert generateNewTask(accountToTask);// DML in LOOP !!!!
             } else {
                 reassignTasks(accountToTask, getRandomUserId());
             }
