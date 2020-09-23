@@ -1,3 +1,7 @@
+/**
+ * Created by JJ93 on 11.09.2020.
+ */
+
 public class NegotiationProcess {
     @InvocableMethod(Label='New Task to new Account')
     public static void newTaskToNewAccount(List<AccountToTask> accounts) {
@@ -5,7 +9,7 @@ public class NegotiationProcess {
         List<Task> tasksToCreate = new List<Task>();
         List<Task> tasksToReassign = new List<Task>();
         List<Task> allTasks = [SELECT Id FROM Task];
-
+        List<User> activeUsers = [SELECT Id FROM User WHERE IsActive = TRUE];
 
         for (AccountToTask accountToTask : accounts) {
             List<Task> tasksToCheck = new List<Task>();
@@ -16,7 +20,7 @@ public class NegotiationProcess {
             }
             if (tasksToCheck.size() >= 3) {
                 for (Task task : tasksToCheck) {
-                    task.OwnerId = getRandomUserId();
+                    task.OwnerId = getRandomUserId(activeUsers);
                 }
                 tasksToReassign.addAll(tasksToCheck);
 
@@ -28,8 +32,7 @@ public class NegotiationProcess {
         insert tasksToCreate;
         update tasksToReassign;
     }
-    private static Id getRandomUserId() {
-        List<User> activeUsers = [SELECT Id FROM User WHERE IsActive = TRUE];
+    private static Id getRandomUserId(List<User> activeUsers) {
         Integer randomUserIndex = Math.round(Math.random() * (activeUsers.size() - 1));
         return activeUsers[randomUserIndex].Id;
     }
